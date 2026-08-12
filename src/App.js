@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Navbar,
   Nav,
@@ -11,49 +11,28 @@ import {
   Badge,
   Footer,
 } from "react-bootstrap";
-
+import { pizzas } from './data';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
+
 function App() {
-  const pizzas = [
-    {
-      id: 1,
-      name: "ao nam 1",
-      image: "/Images/nam1.jpg",
-      price: 14,
-    },
-    {
-      id: 2,
-      name: "ao nam 2",
-      image: "/Images/nam2.jpg",
-      price: 17,
-    },
-    {
-      id: 3,
-      name: "ao nam 3",
-      image: "/Images/nam3.jpg",
-      price: 16,
-    },
-    {
-      id: 4,
-      name: "ao nu 1",
-      image: "/Images/Nu1.jpg",
-      price: 17,
-    },
-    {
-      id: 5,
-      name: "ao nu 2",
-      image: "/Images/Nu2.jpg",
-      price: 17,
-    },
-    {
-      id: 6,
-      name: "ao nu 3",
-      image: "/Images/Nu3.jpg",
-      price: 17,
-    },
-  ];
+const [pizzaList, setPizzaList] = useState(pizzas);
+
+  const handleBuy = (pizzaName) => {
+    setPizzaList((prev) =>
+      prev.map((pizza) => {
+        if (pizza.name === pizzaName && pizza.stock > 0) {
+          return {
+            ...pizza,
+            stock: pizza.stock - 1
+          };
+        }
+        return pizza;
+      })
+    );
+  };
+ 
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -65,7 +44,7 @@ function App() {
       {/* ================= NAVBAR ================= */}
       <Navbar bg="dark" variant="dark" expand="lg">
         <Container fluid>
-          <Card.Img src="./Images/logo.jpg " style={{height:'50px', width:'100px'}}/>
+          <Card.Img src="./Images/logo.jpg " style={{ height: '50px', width: '100px' }} />
 
           <Navbar.Toggle aria-controls="pizza-navbar" />
 
@@ -77,7 +56,7 @@ function App() {
               <Nav.Link>Women</Nav.Link>
               <Nav.Link>Contact</Nav.Link>
             </Nav>
-          
+
           </Navbar.Collapse>
         </Container>
       </Navbar>
@@ -96,7 +75,7 @@ function App() {
           <h2 className="text-center text-white mb-5">Our Menu</h2>
 
           <Row>
-            {pizzas.map((pizza) => (
+            {pizzaList.map((pizza) => (
               <Col
                 key={pizza.id}
                 xs={12}
@@ -120,17 +99,36 @@ function App() {
                   <Card.Body className="text-center">
                     <Card.Title>{pizza.name}</Card.Title>
 
-                  <Card.Text>Price: {pizza.price}</Card.Text>
+                    <Card.Text>Price: {pizza.price}</Card.Text>
+                    {pizza.stock > 0 ? (
+                      <div className="mb-3">
+                        Stock: {pizza.stock}
+                      </div>
+                    ) : (
+                      <div className="mb-3 text-danger fw-bold">
+                        Hết hàng
+                      </div>
+                    )}
+                    {pizza.stock > 0 ? (
 
-                    <Button
-                    
-                      className="w-100 mt-3 primay variant blue"
-                      onClick={() =>
-                        alert(`You selected ${pizza.name}`)
-                      }
-                    >
-                      Add to Cart
-                    </Button>
+                      <Button
+                        className="w-100 rounded-0 fw-bold mt-auto primary variant blue"
+                        onClick={() => handleBuy(pizza.name)}
+                      >
+                        Add to cart
+                      </Button>
+
+                    ) : (
+
+                      <Button
+                        variant="secondary"
+                        className="w-100 rounded-0 fw-bold mt-auto"
+                        disabled
+                      >
+                        OUT OF STOCK
+                      </Button>
+
+                    )}
                   </Card.Body>
                 </Card>
               </Col>
@@ -140,10 +138,10 @@ function App() {
       </section>
 
       <footer>
-     <text>Student Name: Vu Ngoc Quoc Anh</text>
-     <text>Student ID: HE182441</text>
-     <text>CLass Name: Fer202_BL5</text>
-     <text>Email: anhvnqhe182441@fpt.edu.vn</text>
+        <text>Student Name: Vu Ngoc Quoc Anh</text>
+        <text>Student ID: HE182441</text>
+        <text>CLass Name: Fer202_BL5</text>
+        <text>Email: anhvnqhe182441@fpt.edu.vn</text>
       </footer>
     </div>
   );
